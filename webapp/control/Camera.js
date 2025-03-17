@@ -25,6 +25,8 @@ sap.ui.define(["sap/ui/core/Control"], (Control) => {
           "fullscreenchange",
           this._fullscreenChange.bind(this)
         );
+        this._visibleOnActionLayer = [];
+        this._visibleOnCustomizingLayer = [];
         this._canvas = this._createHtmlElementTreeFromJson(
           this._getCameraCanvasObject()
         );
@@ -34,6 +36,15 @@ sap.ui.define(["sap/ui/core/Control"], (Control) => {
         );
         this._videoLayer = this._createHtmlElementTreeFromJson(
           this._getCameraVideosObject()
+        );
+        this._toggleVisibilityIconOnlyCustomizingLayer();
+        console.log(
+          "this._visibleOnActionLayer :>> ",
+          this._visibleOnActionLayer
+        );
+        console.log(
+          "this._visibleOnCustomizingLayer :>> ",
+          this._visibleOnCustomizingLayer
         );
         this._track = null;
         console.log("navigator.userAgent :>> ", navigator.userAgent);
@@ -103,8 +114,10 @@ sap.ui.define(["sap/ui/core/Control"], (Control) => {
       ) {
         this._cameraContainer.removeChild(this._videoLayer);
       }
-      await this._track.stop();
-      this._videoLayer.srcObject = null;
+      if (removeVideoLayer) {
+        await this._track.stop();
+        this._videoLayer.srcObject = null;
+      }
       if (exitFullscreen) document.exitFullscreen();
     },
 
@@ -113,12 +126,19 @@ sap.ui.define(["sap/ui/core/Control"], (Control) => {
         this._closeCamera(false, true, true, true);
       }
     },
-    _onPressCloseIcon(oEvent) {
+    _onPressCloseActionLayerIcon(oEvent) {
       console.log("Close Icon Button Pressed");
       this._closeCamera(true, true, true, true);
     },
+    _onPressCloseCustomizingLayerIcon(oEvent) {
+      console.log("Close Icon Button Pressed");
+      this._closeCamera(false, true, true, true);
+    },
     _onPressSettingsIcon(oEvent) {
       console.log("Settings Icon Button Pressed");
+    },
+    _onPressCancelIcon() {
+      console.log("press cancel icon");
     },
     async _onPressTriggerIcon(oEvent) {
       console.log("Trigger Icon Button Pressed");
@@ -143,9 +163,23 @@ sap.ui.define(["sap/ui/core/Control"], (Control) => {
       try {
         await this._takePictureInCanvas();
         this._canvas.style.zIndex = 2;
+        this._toggleVisibilityIconOnlyActionLayer();
+        this._toggleVisibilityIconOnlyCustomizingLayer();
       } catch (error) {
         console.error("Erreur dans le canvas", error);
       }
+    },
+    _toggleVisibilityIconOnlyActionLayer() {
+      this._visibleOnActionLayer.forEach((element) => {
+        element.classList.toggle("hiddenIconOnlyActionLayer");
+        console.log("element :>> ", element);
+      });
+    },
+    _toggleVisibilityIconOnlyCustomizingLayer() {
+      this._visibleOnCustomizingLayer.forEach((element) => {
+        element.classList.toggle("hiddenIconOnlyCustomizingLayer");
+        console.log("element :>> ", element);
+      });
     },
     async _takePictureInCanvas() {
       this._canvas.width = this._videoLayer.videoWidth;
@@ -226,10 +260,19 @@ sap.ui.define(["sap/ui/core/Control"], (Control) => {
       }
     },
     _addAttributes(domElement, attributes) {
+      console.log("attributes :>> ", attributes);
       if (attributes && typeof attributes === "object") {
         for (const [key, value] of Object.entries(attributes)) {
           if (typeof value === "string" && typeof key === "string") {
             domElement.setAttribute(key, value);
+            if (key === "class" && value.includes("iconOnlyActionLayer")) {
+              this._visibleOnActionLayer.push(domElement);
+            } else if (
+              key === "class" &&
+              value.includes("iconOnlyCustomizingLayer")
+            ) {
+              this._visibleOnCustomizingLayer.push(domElement);
+            }
           } else if (value === null || value === undefined) {
             console.warn(
               `Avertissement : L'attribut '${key}' a une valeur invalide (null ou undefined).`
@@ -282,7 +325,7 @@ sap.ui.define(["sap/ui/core/Control"], (Control) => {
                       class: "cameraIcon cameraCloseIcon",
                     },
                     events: {
-                      click: "_onPressCloseIcon",
+                      click: "_onPressCloseActionLayerIcon",
                     },
                     children: [],
                   },
@@ -308,10 +351,50 @@ sap.ui.define(["sap/ui/core/Control"], (Control) => {
                     innerHTML: "\ue0a6",
                     attributes: {
                       id: "CameraSettingsIcon",
-                      class: "cameraIcon cameraSettingsIcon",
+                      class:
+                        "cameraIcon cameraSettingsIcon iconOnlyActionLayer hiddenIconOnlyActionLayer",
                     },
                     events: {
                       click: "_onPressSettingsIcon",
+                    },
+                    children: [],
+                  },
+                  {
+                    type: "span",
+                    innerHTML: "\ue03e",
+                    attributes: {
+                      id: "CameraCancelIcon",
+                      class:
+                        "cameraIcon cameraCancelIcon iconOnlyCustomizingLayer hiddenIconOnlyCustomizingLayer",
+                    },
+                    events: {
+                      click: "_onPressCancelIcon",
+                    },
+                    children: [],
+                  },
+                  {
+                    type: "span",
+                    innerHTML: "\ue0c1",
+                    attributes: {
+                      id: "CameraPenIcon",
+                      class:
+                        "cameraIcon cameraPenIcon iconOnlyCustomizingLayer hiddenIconOnlyCustomizingLayer",
+                    },
+                    events: {
+                      click: "_onPressPenIcon",
+                    },
+                    children: [],
+                  },
+                  {
+                    type: "span",
+                    innerHTML: "\ue145",
+                    attributes: {
+                      id: "CameraPenIcon",
+                      class:
+                        "cameraIcon cameraPenIcon iconOnlyCustomizingLayer hiddenIconOnlyCustomizingLayer",
+                    },
+                    events: {
+                      click: "_onPressPenIcon",
                     },
                     children: [],
                   },
@@ -346,7 +429,8 @@ sap.ui.define(["sap/ui/core/Control"], (Control) => {
                     innerHTML: "\ue11c",
                     attributes: {
                       id: "CameraTriggerIcon",
-                      class: "cameraIcon cameraTriggerIcon",
+                      class:
+                        "cameraIcon cameraTriggerIcon iconOnlyActionLayer hiddenIconOnlyActionLayer",
                     },
                     events: {
                       click: "_onPressTriggerIcon",
@@ -367,7 +451,8 @@ sap.ui.define(["sap/ui/core/Control"], (Control) => {
                     innerHTML: "\ue00a",
                     attributes: {
                       id: "CameraSwitchEnvironmentIcon",
-                      class: "cameraIcon CameraSwitchEnvironmentIcon",
+                      class:
+                        "cameraIcon CameraSwitchEnvironmentIcon iconOnlyActionLayer hiddenIconOnlyActionLayer",
                     },
                     events: {},
                     children: [],

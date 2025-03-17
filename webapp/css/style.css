@@ -51,15 +51,17 @@
 }
 .cameraActionLayerTopRight {
   flex-direction: column;
-  justify-content: space-between;
+  justify-content: flex-start;
   align-items: flex-end;
+}
+.cameraActionLayerTopRight *{
+  margin-bottom: 1em;
 }
 
 .cameraActionLayerBottom {
 }
 
 .cameraActionLayerBottomLeft {
-  
 }
 .cameraActionLayerBottomCenter {
   justify-content: center;
@@ -79,6 +81,7 @@
 }
 .cameraIcon:hover {
   opacity: 1;
+  font-size: 3em;
   cursor: grab;
 }
 .cameraIcon:active {
@@ -105,4 +108,18 @@
 
 .flashSimulation.invisible {
   background-color: transparent;
+}
+
+.iconOnlyActionLayer {
+}
+
+.iconOnlyActionLayer:not(.hiddenIconOnlyActionLayer) {
+  display: none;
+}
+
+.iconOnlyCustomizingLayer {
+}
+
+.iconOnlyCustomizingLayer:not(.hiddenIconOnlyCustomizingLayer) {
+  display: none;
 }
