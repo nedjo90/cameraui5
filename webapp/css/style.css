@@ -1,0 +1,108 @@
+:root {
+  --camera_IconColor: #fff;
+}
+
+.cameraActionLayer {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  inset: 0;
+  box-sizing: border-box;
+  width: 100%;
+  height: 100%;
+  z-index: 2;
+}
+
+.cameraCanvas,
+.cameraVideoLayer {
+  position: absolute;
+  inset: 0;
+  box-sizing: border-box;
+  z-index: 1;
+  height: 100vh;
+  width: 100vw;
+  object-fit: cover;
+}
+.cameraActionLayer * {
+  background-color: transparent;
+  position: relative;
+  display: flex;
+  box-sizing: border-box;
+  z-index: 1;
+}
+
+.cameraActionLayer > div,
+.cameraActionLayerTop > div,
+.cameraActionLayerBottom > div {
+  padding: 20px;
+  position: relative;
+  display: flex;
+  width: 100%;
+  height: 100%;
+  box-sizing: border-box;
+}
+.cameraActionLayerTop {
+}
+.cameraActionLayerTopLeft {
+  justify-content: flex-start;
+  align-items: flex-start;
+}
+.cameraActionLayerTopCenter {
+}
+.cameraActionLayerTopRight {
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: flex-end;
+}
+
+.cameraActionLayerBottom {
+}
+
+.cameraActionLayerBottomLeft {
+  
+}
+.cameraActionLayerBottomCenter {
+  justify-content: center;
+  align-items: flex-end;
+}
+.cameraActionLayerBottomRight {
+  justify-content: right;
+  align-items: end;
+}
+.cameraIcon {
+  position: relative;
+  color: var(--camera_IconColor);
+  font-family: "SAP-icons";
+  font-size: 2.5em;
+  background-color: transparent;
+  opacity: 0.7;
+}
+.cameraIcon:hover {
+  opacity: 1;
+  cursor: grab;
+}
+.cameraIcon:active {
+  cursor: grabbing;
+}
+.cameraCloseIcon {
+}
+.cameraSettingsIcon {
+}
+.cameraTriggerIcon {
+}
+.flashSimulation {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  opacity: 1;
+  z-index: 9999;
+  transition: background-color 0.2s ease-in-out; /* Transition d'opacité fluide */
+}
+
+.flashSimulation.visible {
+  background-color: white;
+}
+
+.flashSimulation.invisible {
+  background-color: transparent;
+}

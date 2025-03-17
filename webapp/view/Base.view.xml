@@ -1,0 +1,16 @@
+<mvc:View
+    controllerName="soprasteriacamera.controller.Base"
+    xmlns:mvc="sap.ui.core.mvc"
+    xmlns="sap.m"
+    xmlns:cam="soprasteriacamera.control"
+    displayBlock="true"
+>
+    <cam:Camera
+        id="idCamera"
+    />
+    <Button
+        id="idTakeAPictureButton"
+        text="take a picture"
+        press="onTakeAPictureButtonPress"
+    />
+</mvc:View>
